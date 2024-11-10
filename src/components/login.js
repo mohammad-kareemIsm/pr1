@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, CircularProgress } from '@mui/material';
-import { AuthContext } from '../AuthContext'; // Make sure this path is correct
+import { AuthContext } from '../AuthContext'; 
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,43 +12,60 @@ export const Login = () => {
   const submit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const user = {
-      email: email,
-      password: password,
-    };
-
+    const user = { email: email,   password: password,};
     try {
       const { data } = await axios.post(
         'https://quizappsyria.pythonanywhere.com/jwt/create/',
         user,
         {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
+          headers: { 'Content-Type': 'application/json' }, withCredentials: true,
         }
-      );
-
+      );     
       // Store tokens in localStorage
       localStorage.setItem('access_token', data.access);
-      localStorage.setItem('refresh_token', data.refresh);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-
+      localStorage.setItem('refresh_token', data.refresh);        
+      axios.defaults.headers.common['Authorization'] = `JWT ${data.access}`;
       // Optionally, call the login function from AuthContext
       await login(email, password); // If you have a login function in AuthContext
-
       // Redirect based on user role
-      const userRole = data.role; 
-      if (userRole === 'teacher') {
+      //console.log('data_role b', data.role)
+      
+      const respo = await axios.get(
+        // 'https://quizappsyria.pythonanywhere.com/users/',
+         'https://quizappsyria.pythonanywhere.com/users/me/',
+         {
+           headers: {
+             Authorization: `JWT ${localStorage.getItem('access_token')}`, // Add the token to the header
+           },
+         }
+         );      
+        // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;              
+        //console.log("respo: ",JSON.stringify(respo))
+        alert(JSON.stringify(respo.data.role))
+      // const { data2 } = await axios.get(
+      //   'https://quizappsyria.pythonanywhere.com/users/me/',        
+      //   {
+      //     headers: { 'Content-Type': 'application/json' }, withCredentials: true,
+      //   }
+      // );
+      // localStorage.setItem('data2',  JSON.stringify(data2));
+      // localStorage.setItem('data_role2', data2.role);
+
+
+      const userRole = respo.data.role; 
+      debugger;
+      if (userRole === 'Teacher') {
         window.location.href = '/teacher'; // Redirect to teacher dashboard
       } else if (userRole === 'student') {
         window.location.href = '/student'; // Redirect to student dashboard
       } else {
-        window.location.href = '/'; // D efault redirect
+        window.location.href = '/getusers'; 
       }
     } catch (error) {
       console.error('Login failed:', error);
       alert('Login failed. Please check your credentials and try again.'); // Notify user of failure
     } finally {
+     
       setLoading(false);
     }
   };

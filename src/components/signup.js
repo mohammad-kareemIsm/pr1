@@ -7,7 +7,7 @@ import { Field, useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
-// Define the Login function.
+
 export const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -57,9 +57,7 @@ export const Signup = () => {
         );
         const token = response.data.token;
         if (response.status >= 200 && response.status <= 250) {
-          localStorage.setItem("access_token", token);
-          // localStorage.setItem("Email", values.email);
-
+          localStorage.setItem("access_token", token);          
           alert(response.data.message + " Please verify your email.");
           navigate("/verify");
         } else {

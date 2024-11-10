@@ -2,7 +2,7 @@
   "name": "pr1",
   "version": "0.1.0",
   "private": true,
- "homepage": "https://mohammad-kareemIsm.github.io/pr1",  
+  "homepage": "https://mohammad-kareemIsm.github.io/pr1",
   "proxy": "https://quizappsyria.pythonanywhere.com",
   "dependencies": {
     "@emotion/react": "^11.13.3",
