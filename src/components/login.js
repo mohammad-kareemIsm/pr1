@@ -10,52 +10,23 @@ export const Login = () => {
   const { login } = useContext(AuthContext);
 
   const submit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault();    setLoading(true);
     const user = { email: email,   password: password,};
     try {
-      const { data } = await axios.post(
-        'https://quizappsyria.pythonanywhere.com/jwt/create/',
-        user,
-        {
-          headers: { 'Content-Type': 'application/json' }, withCredentials: true,
-        }
-      );     
-      // Store tokens in localStorage
+      const { data } = await axios.post('https://quizappsyria.pythonanywhere.com/jwt/create/',
+        user, { headers: { 'Content-Type': 'application/json' }, withCredentials: true});
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('refresh_token', data.refresh);        
-      axios.defaults.headers.common['Authorization'] = `JWT ${data.access}`;
-      // Optionally, call the login function from AuthContext
-      await login(email, password); // If you have a login function in AuthContext
-      // Redirect based on user role
-      //console.log('data_role b', data.role)
-      
-      const respo = await axios.get(
-        // 'https://quizappsyria.pythonanywhere.com/users/',
-         'https://quizappsyria.pythonanywhere.com/users/me/',
-         {
-           headers: {
-             Authorization: `JWT ${localStorage.getItem('access_token')}`, // Add the token to the header
-           },
-         }
-         );      
-        // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;              
-        //console.log("respo: ",JSON.stringify(respo))
-        alert(JSON.stringify(respo.data.role))
-      // const { data2 } = await axios.get(
-      //   'https://quizappsyria.pythonanywhere.com/users/me/',        
-      //   {
-      //     headers: { 'Content-Type': 'application/json' }, withCredentials: true,
-      //   }
-      // );
-      // localStorage.setItem('data2',  JSON.stringify(data2));
-      // localStorage.setItem('data_role2', data2.role);
-
-
+      axios.defaults.headers.common['Authorization'] = `JWT ${data.access}`;      
+      await login(email, password);             
+      const respo = await axios.get('https://quizappsyria.pythonanywhere.com/users/me/',
+         {headers: { Authorization: `JWT ${localStorage.getItem('access_token')}`,},});                      
+      localStorage.setItem('userid', respo.data.id);
+      localStorage.setItem('refresh_token', data.refresh); 
       const userRole = respo.data.role; 
       debugger;
       if (userRole === 'Teacher') {
-        window.location.href = '/teacher'; // Redirect to teacher dashboard
+        window.location.href = '/quiz'; // Redirect to teacher dashboard
       } else if (userRole === 'student') {
         window.location.href = '/student'; // Redirect to student dashboard
       } else {

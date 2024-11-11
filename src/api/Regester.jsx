@@ -18,7 +18,7 @@ import axios from "axios";
  localStorage.clear();
  localStorage.setItem('access_token', data.access);
  localStorage.setItem('refresh_token', data.refresh);
- axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`; 
+ axios.defaults.headers.common['Authorization'] = `JWT ${data['access']}`; 
   }
 
 function Regester() {

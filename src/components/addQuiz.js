@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, FormHelperText } from '@mui/material';
+import { TextField, Container, CircularProgress, Button, MenuItem, Select, InputLabel, FormControl, FormHelperText, Typography } from '@mui/material';
 
-const AddQuiz = () => {
+const AddQuiz = () => {  
   const [categories, setCategories] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -12,14 +12,24 @@ const AddQuiz = () => {
   const [durationMinutes, setDurationMinutes] = useState('');
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');  
+  const [categoryid, setCategoryid] = useState('');  
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     // Fetch categories and questions from the API
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('https://quizappsyria.pythonanywhere.com/category/GetAllCategory/'); // Adjust the endpoint as necessary
-        setCategories(response.data);
+        const response = await axios.get('https://quizappsyria.pythonanywhere.com/category/GetAllCategory/'
+        ,  {
+          headers: {
+            Authorization: `JWT ${localStorage.getItem('access_token')}`, // Add the token to the header
+          },
+        }
+        ); // Adjust the endpoint as necessary
+        console.log("response: ",response)
+        setCategories(response.data.Categories);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -27,8 +37,16 @@ const AddQuiz = () => {
 
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('https://quizappsyria.pythonanywhere.com/Question/GetAllQuestin/{id}/'); // Adjust the endpoint as necessary
-        setQuestions(response.data);
+    const response =
+     await axios.get(`https://quizappsyria.pythonanywhere.com/Question/GetAllQuestin/${selectedCategory}/`
+        ,  {
+          headers: {
+            Authorization: `JWT ${localStorage.getItem('access_token')}`, // Add the token to the header
+          },
+        }
+        ); // Adjust the endpoint as necessary
+        console.log("response question afetr select cat : ",response)
+       // setQuestions(response.data);
       } catch (error) {
         console.error('Error fetching questions:', error);
       }
@@ -36,8 +54,9 @@ const AddQuiz = () => {
 
     fetchCategories();
     fetchQuestions();
+  
   }, []);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -60,7 +79,7 @@ const AddQuiz = () => {
       const response = await axios.post('https://quizappsyria.pythonanywhere.com/Quizes/CreatQuiz/', quizData, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Ensure the user is authenticated
+          Authorization: `JWT ${localStorage.getItem('access_token')}`, // Ensure the user is authenticated
         },
       });
       alert('The quiz added successfully!');
@@ -81,13 +100,21 @@ const AddQuiz = () => {
   };
 
   return (
+    <Container maxWidth="xs">
+      <Typography variant="h4" align="center" gutterBottom>
+        Add Quize
+      </Typography>
     <form onSubmit={handleSubmit}>
       <FormControl fullWidth margin="normal">
         <InputLabel id="category-label">Category</InputLabel>
         <Select
           labelId="category-label"
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={(e) => setSelectedCategory(e.target.value)
+           // fetchQuestions();
+          
+          
+          }
           required
         >
           {categories.map((category) => (
@@ -156,12 +183,19 @@ const AddQuiz = () => {
 
       {error && (
         <FormHelperText error={true}>{error}</FormHelperText>
-      )}
-
-      <Button type="submit" variant="contained" color="primary">
-        Add Quiz
-      </Button>
+      )}      
+      <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={loading}
+          style={{ marginTop: '16px' }}
+        >
+          {loading ? <CircularProgress size={24} /> : 'Add Quiz'}
+        </Button>
     </form>
+    </Container>
   );
 };
 

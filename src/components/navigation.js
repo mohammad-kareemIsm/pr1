@@ -23,6 +23,9 @@ export function Navigation() {
             <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/logout">Logout</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/changepassword">change password</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/addcategory">add category</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/getallcategory">get all category</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/addQuestion">add Question</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link href="/login">Login</Nav.Link> 
          <Nav.Link href="/signup">Signup</Nav.Link>

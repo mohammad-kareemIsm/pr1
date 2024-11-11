@@ -16,7 +16,7 @@ export const Signup = () => {
   const [role, setRole] = useState('');
   const navigate = useNavigate();
   const handleSelect = (eventKey) => console.log(`Selected: ${eventKey}`);
-
+//alert(5)
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Required"),
     user_name: Yup.string()
@@ -74,46 +74,36 @@ export const Signup = () => {
       }
     },
   });
+ 
   // Create the submit method.
-  // const submit = async (e) => {
-  //   e.preventDefault();
-  //   const user = {
-  //     username: username,
-  //     password: password,
-  //     email: email,
-  //     confirmPassword: confirmPassword,
-  //     role: role
-
-  //   };
-  //   try {
-  //     // Create the POST request
-  //     const { data } = await axios.post(
-  //       'https://quizappsyria.pythonanywhere.com/users/',
-  //       user,
-  //       {
-  //         headers: { 'Content-Type': 'application/json' },
-  //         withCredentials: true
-  //       }
-  //     );
-
-  //     // Initialize the access & refresh token in localStorage.
-  //     localStorage.clear();
-  //     localStorage.setItem('access_token', data.access);
-  //     localStorage.setItem('refresh_token', data.refresh);
-  //     axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`;
-  //     window.location.href = '/';
-  //   } catch (error) {
-  //     console.error('Signup failed:', error);
-  //     // You might want to display an error message to the user here
-  //   }
-  // };
+  const submit = async (e) => {
+    e.preventDefault();
+    const user = {
+      name:username,   role: role,
+      email: email,    password: password,
+      re_password:confirmPassword};
+    try {      
+      const { data } = await axios.post(
+        'https://quizappsyria.pythonanywhere.com/users/', user,
+      { headers: { 'Content-Type': 'application/json' }, withCredentials: true});
+      // Initialize the access & refresh token in localStorage.
+      localStorage.clear();
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
+      axios.defaults.headers.common['Authorization'] = `JWT ${data.access}`;
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Signup failed:', error);
+      // You might want to display an error message to the user here
+    }
+  };
   
   //   
   
 
   return (
     <div className="Auth-form-container d-flex justify-content-center align-items-center vh-100">
-      <form className="Auth-form" onSubmit={formik.handleSubmit} style={{ maxWidth: '400px', width: '100%'}}>
+      <form className="Auth-form" onSubmit={submit} style={{ maxWidth: '400px', width: '100%'}}>
         <div className="Auth-form-content">
           <h3 className="Auth-form-title">Signup</h3>
           <div className="form-group mt-3">
@@ -135,11 +125,14 @@ export const Signup = () => {
      // align="end"
       title="choose"
       id="dropdown-basic-button"
-      onSelect={handleSelect}
+     // onSelect={handleSelect}
+      onSelect={e => setRole(e)
+        //console.log(JSON.stringify(e))
+      }
     >
-      <Dropdown.Item eventKey="1">Teacher</Dropdown.Item>
-      <Dropdown.Item eventKey="2">Student</Dropdown.Item>
-      <Dropdown.Item eventKey="3">Admin</Dropdown.Item>
+      <Dropdown.Item eventKey="Teacher">Teacher</Dropdown.Item>
+      <Dropdown.Item eventKey="Student">Student</Dropdown.Item>
+      <Dropdown.Item eventKey="Admin">Admin</Dropdown.Item>
     </DropdownButton> 
       </div>
           <div className="form-group mt-3">

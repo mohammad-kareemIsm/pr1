@@ -33,7 +33,7 @@ export const Login = () => {
       localStorage.clear();
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`;
+      axios.defaults.headers.common['Authorization'] = `JWT ${data['access']}`;
      // Check user role and redirect accordingly
      const userRole = data.role; 
        if (userRole === 'teacher') {

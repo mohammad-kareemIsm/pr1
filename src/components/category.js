@@ -1,28 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, FormHelperText } from '@mui/material';
+import { TextField, Button, FormHelperText , Typography, Container, CircularProgress} from '@mui/material';
 
 const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
   const [categoryDescription, setCategoryDescription] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccessMessage('');
-
+    e.preventDefault();    setError('');    setSuccessMessage(''); setLoading(true);
     const categoryData = {
       name: categoryName,
       description: categoryDescription,
     };
-
     try {
-      const response = await axios.post('https://quizappsyria.pythonanywhere.com/category/AddCategory/', categoryData, {
+      const response = await axios.post('https://quizappsyria.pythonanywhere.com/category/AddCategory/',
+       categoryData, {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Ensure the user is authenticated
+        'Content-Type': 'application/json',
+        Authorization: `JWT ${localStorage.getItem('access_token')}`,
         },
       });
       setSuccessMessage('Category added successfully!');
@@ -35,9 +32,14 @@ const AddCategory = () => {
         setError('An error occurred while adding the category.');
       }
     }
+    setLoading(false);
   };
 
   return (
+    <Container maxWidth="xs">
+    <Typography variant="h4" align="center" gutterBottom>
+      Add Category
+    </Typography>
     <form onSubmit={handleSubmit}>
       <TextField
         fullWidth
@@ -46,7 +48,6 @@ const AddCategory = () => {
         onChange={(e) => setCategoryName(e.target.value)}
         required
       />
-
       <TextField
         fullWidth
         label="Description"
@@ -56,18 +57,24 @@ const AddCategory = () => {
         multiline
         rows={4}
       />
-
       {error && (
         <FormHelperText error={true}>{error}</FormHelperText>
       )}
       {successMessage && (
         <FormHelperText style={{ color: 'green' }}>{successMessage}</FormHelperText>
-      )}
-
-      <Button type="submit" variant="contained" color="primary">
-        Add Category
-      </Button>
+      )}     
+      <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={loading}
+          style={{ marginTop: '16px' }}
+        >
+          {loading ? <CircularProgress size={24} /> : ' Add Category'}
+        </Button>
     </form>
+    </Container>
   );
 };
 

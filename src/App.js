@@ -28,6 +28,7 @@ import AddQuestion from './components/questions';
 import AddCategory from './components/category'
 import ChangePassword from './components/changepassword';
 import Getusers from './components/getusers';
+import GetAllCategory from './components/getAllCategory'
 
 function App() {
   const { user, loading } = useContext(AuthContext);
@@ -54,6 +55,10 @@ function App() {
        <Route path="/profile" element={<Profile/>}/>
        <Route path="/quiz" element={<AddQuiz/>}/>
        <Route path="/changepassword" element={<ChangePassword/>}/>
+       <Route path="/addcategory" element={<AddCategory/>}/>
+       <Route path="/addcategory" element={<AddCategory/>}/>
+       <Route path="/getallcategory" element={<GetAllCategory/>}/>
+       <Route path="/addQuestion" element={<AddQuestion/>}/>
        <Route path="/getusers" element={<Getusers/>}/>
      </Routes> 
      {/* </Routes>  */} 
